@@ -1,11 +1,8 @@
-<!DOCTYPE HTML>
-<html>
-<body>
- 
- <?php
+<?php
 if(isset($_POST['first_name_field']) and isset($_POST['last_name_field']) and isset($_POST['email_field']) and isset($_POST['password_field']) and isset($_POST['primary_phone_field']) and isset($_POST['year_field']) and isset($_POST['faculty_field']) and isset($_POST['type_field'])){
 	include_once 'config/connection.php';
-	
+	include_once 'config/mail.php';
+    
 	$error = 0;
 	
 	$con->begin_transaction();
@@ -27,9 +24,11 @@ if(isset($_POST['first_name_field']) and isset($_POST['last_name_field']) and is
 		}
 	}
 	else {
-		echo "SQL Prepare Failed.";
 		$con->rollback();
 		$error = 1;
+        http_status_code(500);
+        echo "SQL Prepare Failed. (Account Information)";
+
 	}
 	
 	if ($error == 0){
@@ -40,9 +39,11 @@ if(isset($_POST['first_name_field']) and isset($_POST['last_name_field']) and is
 			$stmt->bind_Param("ssss", $memID, $_POST['year_field'], $_POST['faculty_field'], $_POST['type_field']);
 
 			if (!$stmt->execute()){
-				printf ("Error: %s",$stmt->error);
 				$con->rollback();
 				$error = 1;
+                
+                printf ("Error: %s",$stmt->error);
+                http_status_code(400);
 			}
 			else{
 				echo "Degree Inserted";
@@ -51,16 +52,48 @@ if(isset($_POST['first_name_field']) and isset($_POST['last_name_field']) and is
 		else {
 			$con->rollback();
 			$error = 1;
-			echo "SQL Prepare Failed.";
+            http_status_code(500);
+            echo "SQL Prepare Failed. (Degree Information)";
+            die();
 		}
 	}
 	
 	if ($error == 0){
-		$con->commit();
-		die();
+		
+        $row = $result->fetch_assoc();
+        
+        //Set who the message is to be sent to
+        $mail->addAddress($row['email'], $row['first_name'] . " " . $row['last_name']);
+        
+        //Set the subject line
+        $mail->Subject = 'QBnB Account Creation Success';
+        
+        //Set the message body
+        $mail->Body = 'Hi ' . $row['first_name'] . ",\n\nThank you for creating an account with QBnB! We are happy to have you on board with our Queen's exclusive housing sharing system! We hope you will have an excellent time using our service. You may log in with the following email and the password you specified.\n\nLogin Email: " . $row['email'] . "\n\nIf you have any questions, please send an email to cs@qbnb.ca.\n\nThanks,\n\nQBnB Team";
+        
+        
+        
+        //send the message, check for errors
+        if (!$mail->send()) {
+            $con->rollback();
+            http_response_code(500);
+            echo "Mailer Error: " . $mail->ErrorInfo;
+            die();
+        } else {
+            $con->commit();
+            http_status_code(200);
+            echo("Successfully created account. Please log in with your email and password.");
+            die();
+        }
+        
 	}
 }		 
  ?>
+
+<!DOCTYPE HTML>
+<html>
+<body>
+
 
  <form name='newaccount' id='newaccount' action='newaccount.php' method='post'>
     <table border='0'>
