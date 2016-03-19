@@ -69,7 +69,7 @@ if(isset($_POST['first_name_field']) and isset($_POST['last_name_field']) and is
         $mail->Subject = 'QBnB Account Creation Success';
         
         //Set the message body
-        $mail->Body = 'Hi ' . $row['first_name'] . ",\n\nThank you for creating an account with QBnB! We are happy to have you on board with our Queen's exclusive housing sharing system! We hope you will have an excellent time using our service. You may log in with the following email and the password you specified.\n\nLogin Email: " . $row['email'] . "\n\nIf you have any questions, please send an email to cs@qbnb.ca.\n\nThanks,\n\nQBnB Team";
+        $mail->Body = 'Hi ' . $row['first_name'] . " " .  $row['last_name'] . ",\n\nThank you for creating an account with QBnB! We are happy to have you on board with our Queen's exclusive housing sharing system! We hope you will have an excellent time using our service. You may log in with the following email and the password you specified.\n\nLogin Email: " . $row['email'] . "\n\nIf you have any questions, please send an email to cs@qbnb.ca.\n\nThanks,\n\nQBnB Team";
         
         
         
