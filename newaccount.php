@@ -48,7 +48,7 @@ if(isset($_POST['first_name_field']) and isset($_POST['last_name_field']) and is
                 die();
 			}
 			else{
-				echo "Degree Inserted";
+				//echo "Degree Inserted";
 			}
 		}
 		else {
