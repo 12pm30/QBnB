@@ -5,7 +5,8 @@
 <?php
  //check if the user is already logged in and has an active session
 if(isset($_SESSION['id'])){
-	echo "Already logged in.";
+    http_response_code(200);
+    echo "Already logged in.";
 	die();
 }
  ?>
