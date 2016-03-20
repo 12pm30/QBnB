@@ -1,17 +1,15 @@
-<!DOCTYPE HTML>
-<html>
-<body>
-  <?php
+<?php
   //Create a user session or resume an existing one
  session_start();
  ?>
-  <?php
+<?php
  if (!isset($_SESSION['id'])){
 	echo "Not signed in.";
+	http_response_code(401);
 	die();
  }
  ?>
- <?php
+<?php
 if(isset($_POST['bookID_field'])){
 	include_once 'config/connection.php';
 	 
@@ -36,10 +34,14 @@ if(isset($_POST['bookID_field'])){
 		}
 		else {
 			echo "Booking not found, or already begun";
+			http_response_code(400);
+			die();
 		}
 	}
 	else {
 		echo "SQL Prepare Failed.";
+		http_response_code(500);
+		die();
 	}
 	 
 	if ($ableToCancel == 1){
@@ -55,18 +57,25 @@ if(isset($_POST['bookID_field'])){
 				
 				if ($rowsAffect == 1){
 					echo "Booking deleted.";
+					http_response_code(200);
 					die();
 				}
 				else {
 					echo "Error deleting booking.";
+					http_response_code(500);
 				}
 			}
 			else {
 				echo "SQL Prepare Failed.";
+				http_response_code(500);
+				die();
 			}
 	}
 }
  ?>
+<!DOCTYPE HTML>
+<html>
+<body>
  
 <form name='bookDelForm' id='bookDelForm' action='cancelbooking.php' method='post'>
     <table border='0'>

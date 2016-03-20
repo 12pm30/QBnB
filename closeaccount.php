@@ -1,19 +1,15 @@
-<!DOCTYPE HTML>
-<html>
-<body>
-  <?php
+<?php
   //Create a user session or resume an existing one
  session_start();
  ?>
- 
- <?php
+<?php
  if (!isset($_SESSION['id'])){
 	echo "Not signed in.";
+	http_response_code(401);
 	die();
  }
  ?>
- 
- <?php 
+<?php 
  if(isset($_POST['passValidate'])){
 	include_once 'config/connection.php';
 	 
@@ -36,10 +32,14 @@
 		}
 		else {
 			echo "Incorrect password.";
+			http_response_code(400);
+			die();
 		}
 	}
 	else {
 		echo "SQL Prepare Failed.";
+		http_response_code(500);
+		die();
 	}
 	 
 	if ($passValid == 1){
@@ -55,6 +55,8 @@
 				
 				if ($rowsAffect == 0){
 					echo "Member not found.";
+					http_response_code(500);
+					die();
 				}
 				else {
 					echo "Member Deleted. <br>";
@@ -63,15 +65,22 @@
 					$_SESSION['supplier']=null;
 					session_destroy();
 					echo "Logged out.";
+					http_response_code(200);
 					die();
 				}
 			}
 			else {
 				echo "SQL Prepare Failed.";
+				http_response_code(500);
+				die();
 			}
 	}
 }
 ?>
+<!DOCTYPE HTML>
+<html>
+<body>
+
  <form name='delAcct' id='delAcct' action='closeaccount.php' method='post'>
     <table border='0'>
 		<tr>

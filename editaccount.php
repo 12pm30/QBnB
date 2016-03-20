@@ -1,79 +1,8 @@
-<!DOCTYPE HTML>
-<html>
-<body>
-  <?php
+<?php
   //Create a user session or resume an existing one
  session_start();
  ?>
- 
- <?php 
- if(isset($_POST['first_name_field']) and isset($_POST['last_name_field']) and isset($_POST['email_field']) and isset($_POST['primary_phone_field']) and isset($_POST['numberDegrees'])){
-	 $error = 0;
-	for ($x = 1; $x <= $_POST['numberDegrees']; $x++){
-		if (!isset($_POST['degID_' . $x]) or !isset($_POST['year_' . $x]) or !isset($_POST['faculty_' . $x]) or !isset($_POST['type_' . $x])){
-			echo "Error: Degree data missing for entry " . $x;
-			$error = 1;
-		}
-	}
-	if ($error == 0) {
-		include_once 'config/connection.php';
-		
-		$con->begin_transaction();
-	
-		$query = "UPDATE member SET first_name = ?, middle_initial = ?, last_name = ?, email = ?, primary_phone = ?, secondary_phone = ?, profile_pic_URL = ? WHERE member_ID = ?";
-		
-		if ($stmt = $con->prepare($query)){
-			
-			$stmt->bind_Param("ssssssss", $_POST['first_name_field'], $_POST['middle_initial_field'], $_POST['last_name_field'], $_POST['email_field'], $_POST['primary_phone_field'], $_POST['secondary_phone_field'], $_POST['ppURL_field'], $_SESSION['id']);
-
-			if(!$stmt->execute()){
-				printf ("Error: %s",$stmt->error);
-				$con->rollback();
-				$error = 1;
-			}
-			else{
-				echo "Account update successful. <br>";
-			}
-		}
-		else {
-			echo "SQL Prepare Failed.";
-			$con->rollback();
-			$error = 1;
-		}
-	}
-	for ($x = 1; $x <= $_POST['numberDegrees']; $x++){
-		if ($error == 0) {
-		
-			$query = "UPDATE degree SET year = ?, faculty = ?, type = ? WHERE degree_ID = ? and member_ID = ?";
-			
-			if ($stmt = $con->prepare($query)){
-				
-				$stmt->bind_Param("sssss", $_POST['year_' . $x], $_POST['faculty_' . $x], $_POST['type_' . $x], $_POST['degID_' . $x], $_SESSION['id']);
-
-				if(!$stmt->execute()){
-					printf ("Error: %s",$stmt->error);
-					$con->rollback();
-					$error = 1;
-				}
-				else{
-					echo "Degree " . $x . " update successful. <br>";
-				}
-			}
-			else {
-				echo "SQL Prepare Failed.";
-				$con->rollback();
-				$error = 1;
-			}
-		}
-	}
-	if ($error == 0){
-		$con->commit();
-		die();
-	}
-}
-?>
- 
- <?php
+<?php
 if(isset($_SESSION['id'])){
 	include_once 'config/connection.php';
 	
@@ -94,11 +23,13 @@ if(isset($_SESSION['id'])){
 		}
 		else {
 			echo "Error: Account not found.";
+			http_response_code(500);
 			die();
 		}
 	}
 	else {
-		echo "SQL Prepare Failed.";
+		echo "SQL Prepare Failed. (Load account)";
+		http_response_code(500);
 		die();
 	}
 	
@@ -116,19 +47,137 @@ if(isset($_SESSION['id'])){
 		
 		if ($numdegs <= 0){
 			echo "Error: Degrees not found.";
+			http_response_code(500);
 			die();
 		}
 	}
 	else {
-		echo "SQL Prepare Failed.";
+		echo "SQL Prepare Failed. (Load degrees)";
+		http_response_code(500);
 		die();
 	}
 }
 else {
 	echo "Not signed in.";
+	http_response_code(401);
 	die();
 }
  ?>
+<?php 
+if(isset($_POST['first_name_field']) and isset($_POST['last_name_field']) and isset($_POST['email_field']) and isset($_POST['primary_phone_field']) and isset($_POST['numberDegrees'])){
+	$error = 0;
+	for ($x = 1; $x <= $_POST['numberDegrees']; $x++){
+		if (!isset($_POST['degID_' . $x]) or !isset($_POST['year_' . $x]) or !isset($_POST['faculty_' . $x]) or !isset($_POST['type_' . $x])){
+			echo "Error: Degree data missing for entry " . $x;
+			$error = 1;
+			http_response_code(400);
+			die();
+		}
+	}
+	
+	if (empty($_POST['middle_initial_field'])){
+			$_POST['middle_initial_field'] = NULL;
+	}
+		
+	if (empty($_POST['secondary_phone_field'])){
+			$_POST['secondary_phone_field'] = NULL;
+	}
+		
+	if (empty($_POST['ppURL_field'])){
+			$_POST['ppURL_field'] = NULL;
+	}
+
+	if ($error == 0) {
+		include_once 'config/connection.php';
+		
+		$con->begin_transaction();
+	
+		$query = "UPDATE member SET first_name = ?, middle_initial = ?, last_name = ?, email = ?, primary_phone = ?, secondary_phone = ?, profile_pic_URL = ? WHERE member_ID = ?";
+		
+		if ($stmt = $con->prepare($query)){
+			
+			$stmt->bind_Param("ssssssss", $_POST['first_name_field'], $_POST['middle_initial_field'], $_POST['last_name_field'], $_POST['email_field'], $_POST['primary_phone_field'], $_POST['secondary_phone_field'], $_POST['ppURL_field'], $_SESSION['id']);
+
+			if(!$stmt->execute()){
+				printf ("Error: %s",$stmt->error);
+				$con->rollback();
+				$error = 1;
+				http_response_code(500);
+				die();
+			}
+			else if ($con->affected_rows == 1){
+				echo "Account update successful. <br>";
+			}
+			else{
+				echo "Error updating account.";
+				$con->rollback();
+				$error = 1;
+				http_response_code(500);
+				die();
+			}
+		}
+		else {
+			echo "SQL Prepare Failed. (Update account)";
+			$con->rollback();
+			$error = 1;
+			http_response_code(500);
+			die();
+		}
+	}
+	for ($x = 1; $x <= $_POST['numberDegrees']; $x++){
+		if ($error == 0) {
+		
+			$query = "UPDATE degree SET year = ?, faculty = ?, type = ? WHERE degree_ID = ? and member_ID = ?";
+			
+			if ($stmt = $con->prepare($query)){
+				
+				$stmt->bind_Param("sssss", $_POST['year_' . $x], $_POST['faculty_' . $x], $_POST['type_' . $x], $_POST['degID_' . $x], $_SESSION['id']);
+
+				if(!$stmt->execute()){
+					printf ("Error: %s",$stmt->error);
+					$con->rollback();
+					$error = 1;
+					http_response_code(500);
+					die();
+				}
+				else if ($con->affected_rows == 1){
+					echo "Degree " . $x . " update successful. <br>";
+				}
+				else {
+					echo $con->affected_rows . "<br>";
+					echo "Error updating degree " . $x;
+					$error = 1;
+					$con->rollback();
+					http_response_code(500);
+					die();
+				}
+			}
+			else {
+				echo "SQL Prepare Failed. (Update degree)";
+				$con->rollback();
+				$error = 1;
+				http_response_code(500);
+				die();
+			}
+		}
+	}
+	if ($error == 0){
+		$con->commit();
+		http_response_code(200);
+		echo "All updates succeeded.";
+		die();
+	}
+	else{
+		$con->rollback();
+		echo "Update failed.";
+		http_response_code(500);
+		die();
+	}
+}
+?>
+<!DOCTYPE HTML>
+<html>
+<body>
  
  <form name='login' id='login' action='editaccount.php' method='post'>
     <table border='0'>
@@ -173,10 +222,7 @@ else {
              <td><input type='url' name='ppURL_field' id='ppURL_field' 
 			 <?php echo 'value="'.$memrow['profile_pic_URL'].'"';?>
 			 /></td>
-        </tr>
-		<tr>
-			<td><b>ADD SCRIPTS FOR ADDING/REMOVING DEGREES!!!</b></td>
-		</tr>		
+        </tr>	
 		<?php	
 		echo
 		"<input type='hidden' name='numberDegrees' id = 'numberDegrees'

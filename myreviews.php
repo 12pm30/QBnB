@@ -5,6 +5,7 @@
 <?php
  if (!isset($_SESSION['id'])){
 	echo "Not signed in.";
+	http_response_code(401);
 	die();
  }
  ?>
@@ -20,81 +21,20 @@ if ($stmt = $con->prepare($query)){
 	$stmt->execute();
 	
 	$result = $stmt->get_result();
-	
-	$num = $result->num_rows;
-	
-	if ($num == 0){
-		echo "No reviews found.";
-		die();
-	}
 }
 else {
 	echo "SQL Prepare Failed.";
+	http_response_code(500);
+	die();
 }
 ?>
 <?php
-		/*
-		echo
-		"<input type='hidden' name='numberReviews' id = 'numberReviews'
-			value = '" . $num . "'
-			/>";
-		*/
-			
-		// create an array
 		$dataarray = array();
 		while ($row = $result->fetch_assoc()){
 			$dataarray[] = $row;
 		}
 		
 		echo json_encode($dataarray);
-			
-		/*
-		$x = 1;
-		
-		while ($reviewrow = $result->fetch_assoc()) {
-				echo 
-		"<tr>
-			<td><b>Review " . $x . "</b></td>
-		</tr>
-		<tr>
-			<td>Property ID: " . $reviewrow['property_ID'] . "</td>
-		</tr>
-		<tr>
-			<td>First Name: " . $reviewrow['first_name'] . "</td>
-		</tr>
-		<tr>
-			<td>Middle Initial: " . $reviewrow['middle_initial'] . "</td>
-		</tr>
-		<tr>
-			<td>Last Name: " . $reviewrow['last_name'] . "</td>
-		</tr>
-		<tr>
-			<td>Street Number: " . $reviewrow['street_number'] . "</td>
-		</tr>
-		<tr>
-			<td>Street Name: " . $reviewrow['street_name'] . "</td>
-		</tr>
-		<tr>
-			<td>Apt Number: " . $reviewrow['apt_number'] . "</td>
-		</tr>
-		<tr>
-			<td>City: " . $reviewrow['city'] . "</td>
-		</tr>
-		<tr>
-			<td>Province: " . $reviewrow['province'] . "</td>
-		</tr>
-		<tr>
-			<td>Postal Code: " . $reviewrow['postal_code'] . "</td>
-		</tr>
-		<tr>
-			<td>Rating: " . $reviewrow['rating'] . "</td>
-		</tr>
-		<tr>
-			<td>Review Text: " . $reviewrow['review_text'] . "</td>
-		</tr>"
-		;
-				$x = $x + 1;
-			}
-			
-		*/
+		http_response_code(200);
+		die();
 ?>

@@ -44,6 +44,7 @@ if(!isset($_SESSION['id']) and isset($_POST['email']) and isset($_POST['password
 	}
 	else {
 		echo "SQL Prepare Failed.";
+		http_response_code(500);
 	}
 }		 
  ?>
