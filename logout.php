@@ -1,7 +1,4 @@
-<!DOCTYPE HTML>
-<html>
-<body>
-  <?php
+<?php
   //Create a user session or resume an existing one
  session_start();
  ?>
@@ -12,12 +9,11 @@ if(isset($_SESSION['id'])){
 	$_SESSION['admin']=null;
 	$_SESSION['supplier']=null;
 	session_destroy();
+    http_response_code(200);
 	echo "Logged out successfully.";
 }
 else {
+    http_response_code(400);
 	echo "Not signed in.";
 }
  ?>
- 
-</body>
-</html>
