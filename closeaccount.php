@@ -59,7 +59,7 @@
 					die();
 				}
 				else {
-					echo "Member Deleted. <br>";
+					echo "Member Deleted. ";
 					$_SESSION['id']=null;
 					$_SESSION['admin']=null;
 					$_SESSION['supplier']=null;

@@ -71,6 +71,12 @@
 			}
 	}
 }
+    
+    http_response_code(666);
+    echo("satan's child");
+   
+    
+    
 ?>
 <!DOCTYPE HTML>
 <html>
