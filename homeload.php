@@ -5,6 +5,7 @@
 <?php
 if(isset($_SESSION['id'])){
 	$resarray = array();
+    $resarray['id'] = $_SESSION['id'];
 	$resarray['admin'] = $_SESSION['admin'];
 	$resarray['supplier'] = $_SESSION['supplier'];
 	echo json_encode($resarray);

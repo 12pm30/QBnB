@@ -9,11 +9,13 @@ if(isset($_SESSION['id'])){
 	$_SESSION['admin']=null;
 	$_SESSION['supplier']=null;
 	session_destroy();
+    http_response_code(200);
 	echo "Logged out successfully.";
 	http_response_code(200);
 	die();
 }
 else {
+    http_response_code(400);
 	echo "Not signed in.";
 	http_response_code(401);
 	die();
