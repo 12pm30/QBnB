@@ -2,7 +2,7 @@
   //Create a user session or resume an existing one
  session_start();
  ?>
- <?php
+<?php
 if(isset($_SESSION['id'])){
 	//Destroy the user's session.
 	$_SESSION['id']=null;
@@ -11,9 +11,13 @@ if(isset($_SESSION['id'])){
 	session_destroy();
     http_response_code(200);
 	echo "Logged out successfully.";
+	http_response_code(200);
+	die();
 }
 else {
     http_response_code(400);
 	echo "Not signed in.";
+	http_response_code(401);
+	die();
 }
  ?>

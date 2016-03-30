@@ -1,11 +1,8 @@
-<!DOCTYPE HTML>
-<html>
-<body>
-  <?php
+<?php
   //Create a user session or resume an existing one
  session_start();
  ?>
- <?php
+<?php
 if(isset($_SESSION['id'])){
 	include_once 'config/connection.php';
 	
@@ -23,18 +20,21 @@ if(isset($_SESSION['id'])){
 		
 		$num = $result->num_rows;
 		
+		$resarray = array();
+		
 		while ($row = $result->fetch_assoc()){
-			printf("Booking ID: %s<br>Property ID: %s<br>First Name: %s<br>Middle Initial: %s<br>Last Name: %s<br>Street Number: %s<br>Street Name: %s<br>Apt. Number: %s<br>City: %s<br>Province: %s<br>Postal Code: %s<br>Start Date: %s<br>End Date: %s<br>", $row['booking_ID'],$row['property_ID'], $row['first_name'], $row['middle_initial'], $row['last_name'], $row['street_number'], $row['street_name'], $row['apt_number'], $row['city'], $row['province'], $row['postal_code'], $row['start_date'], $row['end_date']);
+			$resarray[] = $row;
 		}
+		echo json_encode($resarray);
+		http_response_code(200);
 	}
 	else {
 		echo "SQL Prepare Failed.";
+		http_response_code(500);
 	}
 }
 else {
 	echo "Not signed in.";
+	http_response_code(401);
 }
  ?>
- 
-</body>
-</html>

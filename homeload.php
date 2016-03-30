@@ -1,18 +1,19 @@
-<!DOCTYPE HTML>
-<html>
-<body>
-  <?php
+<?php
   //Create a user session or resume an existing one
  session_start();
  ?>
- <?php
+<?php
 if(isset($_SESSION['id'])){
-	printf ("Admin: %d <br> Supplier: %d", $_SESSION['admin'], $_SESSION['supplier']);
+	$resarray = array();
+	$resarray['admin'] = $_SESSION['admin'];
+	$resarray['supplier'] = $_SESSION['supplier'];
+	echo json_encode($resarray);
+	http_response_code(200);
+	die();
 }
 else {
 	echo "Not signed in.";
+	http_response_code(401);
+	die();
 }
  ?>
- 
-</body>
-</html>

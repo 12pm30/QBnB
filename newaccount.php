@@ -11,6 +11,18 @@ if(isset($_POST['first_name_field']) and isset($_POST['last_name_field']) and is
 	
 	if ($stmt = $con->prepare($query)){
 		
+		if (empty($_POST['middle_initial_field'])){
+			$_POST['middle_initial_field'] = NULL;
+		}
+		
+		if (empty($_POST['secondary_phone_field'])){
+			$_POST['secondary_phone_field'] = NULL;
+		}
+		
+		if (empty($_POST['ppURL_field'])){
+			$_POST['ppURL_field'] = NULL;
+		}
+		
 		$stmt->bind_Param("ssssssss", $_POST['first_name_field'], $_POST['middle_initial_field'], $_POST['last_name_field'], $_POST['email_field'], $_POST['password_field'], $_POST['primary_phone_field'], $_POST['secondary_phone_field'], $_POST['ppURL_field']);
 
 		if (!$stmt->execute()){
@@ -18,10 +30,10 @@ if(isset($_POST['first_name_field']) and isset($_POST['last_name_field']) and is
 			$con->rollback();
 			$error = 1;
             http_response_code(400);
+			die();
 		}
 		else{
 			$memID = $con->insert_id;
-			//echo "Account Created. ID: " . $memID . "<br>";
 		}
 	}
 	else {
@@ -46,9 +58,6 @@ if(isset($_POST['first_name_field']) and isset($_POST['last_name_field']) and is
                 printf ("Error: %s",$stmt->error);
                 http_response_code(400);
                 die();
-			}
-			else{
-				//echo "Degree Inserted";
 			}
 		}
 		else {
@@ -89,11 +98,9 @@ if(isset($_POST['first_name_field']) and isset($_POST['last_name_field']) and is
 	}
 }		 
  ?>
-
 <!DOCTYPE HTML>
 <html>
 <body>
-
 
  <form name='newaccount' id='newaccount' action='newaccount.php' method='post'>
     <table border='0'>

@@ -1,19 +1,15 @@
-<!DOCTYPE HTML>
-<html>
-<body>
-  <?php
+<?php
   //Create a user session or resume an existing one
  session_start();
  ?>
- 
- <?php
+<?php
  if (!isset($_SESSION['id'])){
 	echo "Not signed in.";
+	http_response_code(401);
 	die();
  }
  ?>
- 
- <?php 
+<?php 
  if(isset($_POST['year_field']) and isset($_POST['faculty_field']) and isset($_POST['type_field'])){
 	 include_once 'config/connection.php';
 	 
@@ -25,17 +21,25 @@
 
 			if (!$stmt->execute()){
 				printf ("Error: %s",$stmt->error);
+				http_response_code(500);
+				die();
 			}
 			else{
 				echo "Degree Inserted.";
+				http_response_code(200);
 				die();
 			}
 		}
 		else {
 			echo "SQL Prepare Failed.";
+			http_response_code(500);
+			die();
 		}
 }
 ?>
+<!DOCTYPE HTML>
+<html>
+<body>
  <form name='addDeg' id='addDeg' action='adddegree.php' method='post'>
     <table border='0'>
         <tr>

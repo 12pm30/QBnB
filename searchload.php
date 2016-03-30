@@ -1,11 +1,8 @@
-<!DOCTYPE HTML>
-<html>
-<body>
-  <?php
+<?php
   //Create a user session or resume an existing one
  session_start();
  ?>
- <?php
+<?php
 if(isset($_SESSION['id'])){
 	include_once 'config/connection.php';
 	
@@ -19,14 +16,16 @@ if(isset($_SESSION['id'])){
 		
 		$num = $result->num_rows;
 		
-		printf("Districts: <br>");
+		$resarrayd = array();
 		
 		while ($row = $result->fetch_assoc()){
-			printf("District ID: %s <br> District Title: %s <br>", $row['district_ID'], $row['district']);
+			$resarrayd[] = $row;
 		}
 	}
 	else {
-		echo "SQL Prepare Failed.";
+		echo "SQL Prepare Failed. (District)";
+		http_response_code(500);
+		die();
 	}
 	
 	$query = "SELECT * from feature";
@@ -39,20 +38,29 @@ if(isset($_SESSION['id'])){
 		
 		$num = $result->num_rows;
 		
-		printf("Features: <br>");
+		$resarrayf = array();
 		
 		while ($row = $result->fetch_assoc()){
-			printf("Feature ID: %s <br> Feature Name: %s <br>", $row['feature_ID'], $row['feature_name']);
+			$resarrayf[] = $row;
 		}
 	}
 	else {
-		echo "SQL Prepare Failed.";
+		echo "SQL Prepare Failed. (Feature)";
+		http_response_code(500);
+		die();
 	}
+	
+	$resarray = array();
+	$resarray['districts'] = $resarrayd;
+	$resarray['features'] = $resarrayf;
+	
+	echo json_encode($resarray);
+	http_response_code(200);
+	die();
 }
 else {
 	echo "Not signed in.";
+	http_response_code(401);
+	die();
 }
  ?>
- 
-</body>
-</html>

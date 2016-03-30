@@ -48,6 +48,8 @@
         }
         else {
             echo "SQL Prepare Failed.";
+			http_response_code(500);
+			die();
         }
     }
     ?>

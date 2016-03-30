@@ -1,11 +1,8 @@
-<!DOCTYPE HTML>
-<html>
-<body>
-  <?php
+<?php
   //Create a user session or resume an existing one
  session_start();
  ?>
- <?php
+<?php
 if(isset($_SESSION['id'])){
 	include_once 'config/connection.php';
 	
@@ -23,22 +20,23 @@ if(isset($_SESSION['id'])){
 		
 		if ($num == 1){
 			$row = $result->fetch_assoc();
+			$resarray = array();
 			
-			printf("First Name: %s <br> Middle Initial: %s <br> Last name: %s <br> Profile Picture: %s <br> Admin: %d", $row['first_name'], $row['middle_initial'], $row['last_name'], $row['profile_pic_URL'], $_SESSION['admin']);
-			
+			$resarray[] = $row;	
+			echo json_encode($resarray);	
 		}
 		else {
 			echo "Error: Account not found.";
+			http_response_code(500);
 		}
 	}
 	else {
 		echo "SQL Prepare Failed.";
+		http_response_code(500);
 	}
 }
 else {
 	echo "Not signed in.";
+	http_response_code(401);
 }
  ?>
- 
-</body>
-</html>

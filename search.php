@@ -1,11 +1,8 @@
-<!DOCTYPE HTML>
-<html>
-<body>
-  <?php
+<?php
   //Create a user session or resume an existing one
  session_start();
  ?>
- <?php
+<?php
 if(isset($_SESSION['id'])){
 	if (isset($_POST['searchBtn'])){
 		include_once 'config/connection.php';
@@ -167,20 +164,33 @@ if(isset($_SESSION['id'])){
 			
 			$num = $result->num_rows;
 			
+			$resarray = array();
+			
 			while ($row = $result->fetch_assoc()){
-				printf("Property ID: %s<br>First Name: %s<br>Middle Initial: %s<br>Last Name: %s<br>Street Number: %s<br>Street Name: %s<br>Apt. Number: %s<br>City: %s<br>Province: %s<br>Postal Code: %s<br>Number of Bedrooms: %s<br>Number of Bathrooms: %s<br>Accomodation Type: %s<br>Price: %s<br>Average Rating: %s<br>", $row['property_ID'], $row['first_name'], $row['middle_initial'], $row['last_name'], $row['street_number'], $row['street_name'], $row['apt_number'], $row['city'], $row['province'], $row['postal_code'], $row['num_bedrooms'], $row['num_bathrooms'], $row['accomodation_type'], $row['price'], $row['AVG(rating)']);
+				$resarray[] = $row;
 			}
+			
+			echo json_encode($resarray);
+			http_response_code(200);
+			die();
 		}
 		else {
 			echo "SQL Prepare Failed.";
+			http_response_code(500);
+			die();
 		}
 	}
 }
 else {
 	echo "Not signed in.";
+	http_response_code(401);
+	die();
 }
  ?>
- 
+<!DOCTYPE HTML>
+<html>
+<body>
+
 <form name='searchForm' id='searchForm' action='search.php' method='post'>
     <table border='0'>
         <tr>
