@@ -39,6 +39,28 @@ if(isset($_POST['property_to_view'])){
 		die();
 	}
 	
+	$query = "SELECT feature_ID FROM feature NATURAL JOIN prop_feature WHERE property_ID = ?";
+	
+	if ($stmt = $con->prepare($query)){
+		
+		$stmt->bind_Param("s", $_POST['property_to_view']);
+
+		$stmt->execute();
+		
+		$result = $stmt->get_result();
+		
+		$resarrayf = array();
+		
+		while ($row = $result->fetch_assoc()){
+			$resarrayf[] = $row['feature_ID'];
+		}
+	}
+	else {
+		echo "SQL Prepare Failed. (Features)";
+		http_response_code(500);
+		die();
+	}
+	
 	$query = "SELECT booking_id, start_date, end_date, status, member_ID, first_name, middle_initial, last_name FROM booking NATURAL JOIN member WHERE property_ID = ? AND end_date > ?";
 	
 	if ($stmt = $con->prepare($query)){
@@ -85,8 +107,34 @@ if(isset($_POST['property_to_view'])){
 		die();
 	}
 	
+	$query = "SELECT caption, photo_URL FROM prop_photo WHERE property_ID = ?";
+	
+	if ($stmt = $con->prepare($query)){
+		
+		$present_date = date("Y-m-d");
+		
+		$stmt->bind_Param("s", $_POST['property_to_view']);
+
+		$stmt->execute();
+		
+		$result = $stmt->get_result();
+		
+		$resarrayp = array();
+		
+		while ($row = $result->fetch_assoc()){
+			$resarrayp[] = $row;
+		}
+	}
+	else {
+		echo "SQL Prepare Failed. (Photos)";
+		http_response_code(500);
+		die();
+	}
+	
 	$resarray = array();
 	$resarray['details'] = $resarraypd;
+	$resarray['features'] = $resarrayf;
+	$resarray['photos'] = $resarrayp;
 	$resarray['bookings'] = $resarrayb;
 	$resarray['reviews'] = $resarrayr;
 	
