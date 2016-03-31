@@ -39,7 +39,7 @@ if(isset($_POST['property_to_view'])){
 		die();
 	}
 	
-	$query = "SELECT booking_id, start_date, end_date, status, first_name, member_ID, first_name, middle_initial, last_name FROM booking NATURAL JOIN member WHERE property_ID = ? AND end_date > ?";
+	$query = "SELECT booking_id, start_date, end_date, status, member_ID, first_name, middle_initial, last_name FROM booking NATURAL JOIN member WHERE property_ID = ? AND end_date > ?";
 	
 	if ($stmt = $con->prepare($query)){
 		
