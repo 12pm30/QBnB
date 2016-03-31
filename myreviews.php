@@ -12,7 +12,7 @@
 <?php 
 include_once 'config/connection.php';
  
-$query = "SELECT property_ID, first_name, middle_initial, last_name, street_number, street_name, apt_number, city, province, postal_code, rating, review_text FROM review JOIN (property NATURAL JOIN member) USING (property_ID) WHERE review.member_ID = ?";
+$query = "SELECT property_ID, first_name, middle_initial, last_name, street_number, street_name, apt_number, city, province, postal_code, rating, review_text , reply_text FROM review JOIN (property NATURAL JOIN member) USING (property_ID) WHERE review.member_ID = ?";
 
 if ($stmt = $con->prepare($query)){
 	
