@@ -52,14 +52,14 @@ if($_SESSION['admin'] != 1){
 
 ?>
 <?php
-if (isset($_POST['member_ID_field'])){
+if (isset($_GET['member_ID_field'])){
 	include_once 'config/connection.php';
 		
 	$query = "SELECT member_ID, first_name, middle_initial, last_name, email, primary_phone, secondary_phone, admin, supplier FROM member WHERE member_ID = ?";
 
 	if ($stmt = $con->prepare($query)){
 		
-		$stmt->bind_Param("s", $_POST['member_ID_field']);
+		$stmt->bind_Param("s", $_GET['member_ID_field']);
 
 		$stmt->execute();
 		
@@ -111,7 +111,7 @@ if (isset($_POST['member_ID_field'])){
 
 	if ($stmt = $con->prepare($query)){
 		
-		$stmt->bind_Param("s", $_POST['member_ID_field']);
+		$stmt->bind_Param("s", $_GET['member_ID_field']);
 
 		$stmt->execute();
 		
@@ -157,7 +157,7 @@ if (isset($_POST['member_ID_field'])){
 
 		if ($stmt = $con->prepare($query)){
 			
-			$stmt->bind_Param("s", $_POST['member_ID_field']);
+			$stmt->bind_Param("s", $_GET['member_ID_field']);
 
 			$stmt->execute();
 			
@@ -206,12 +206,12 @@ if (isset($_POST['member_ID_field'])){
 	}
 }
 ?>
-<form name='summmemberForm' id='summmemberForm' action='adminsummarizemember.php' method='post'>
+<form name='summmemberForm' id='summmemberForm' action='adminsummarizemember.php' method='get'>
     <table border='0'>
         <tr>
 			<td>Member ID</td>
 			<td><input type='number' name='member_ID_field' id='member_ID_field' 
-			 <?php if (isset($_POST['member_ID_field'])) echo 'value="'.$_POST['member_ID_field'].'"';?>
+			 <?php if (isset($_GET['member_ID_field'])) echo 'value="'.$_GET['member_ID_field'].'"';?>
 			 /></td>
 		</tr>
         <tr>
