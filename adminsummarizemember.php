@@ -104,6 +104,7 @@ if (isset($_GET['member_ID_field'])){
 	else {
 		echo "SQL Prepare Failed. (Member info)";
 		http_response_code(500);
+		die();
 	}
 	
 	
@@ -149,6 +150,7 @@ if (isset($_GET['member_ID_field'])){
 	else {
 		echo "SQL Prepare Failed. (Bookings Made)";
 		http_response_code(500);
+		die();
 	}
 	
 	if ($supplier == 1){
@@ -202,8 +204,10 @@ if (isset($_GET['member_ID_field'])){
 		else {
 			echo "SQL Prepare Failed. (Supplier info)";
 			http_response_code(500);
+			die();
 		}
 	}
+	die();
 }
 ?>
 <form name='summmemberForm' id='summmemberForm' action='adminsummarizemember.php' method='get'>
