@@ -22,35 +22,115 @@ if(isset($_POST['districtID_field']) and isset($_POST['street_number_field']) an
 	
 	$con->begin_transaction();
 	
-	$query = "INSERT INTO property (`property_ID`, `member_ID`, `district_ID`, `enabled`, `street_number`, `street_name`, `apt_number`, `city`, `province`, `postal_code`, `num_bedrooms`, `num_bathrooms`, `accomodation_type`, `price`) VALUES (NULL, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	
-	if ($stmt = $con->prepare($query)){
+	if(isset($_POST['existingPropID']) and !empty($_POST['existingPropID'])){
+		$query = "UPDATE property SET district_ID = ?, street_number = ?, street_name = ?, apt_number = ?, city = ?, province = ?, postal_code = ?, num_bedrooms = ?, num_bathrooms = ?, accomodation_type = ?, price = ? WHERE property_ID = ? and member_ID = ?";
 		
-		if (empty($_POST['apt_number_field'])){
-			$_POST['apt_number_field'] = NULL;
-		}
-		
-		$stmt->bind_Param("ssssssssssss", $_SESSION['id'], $_POST['districtID_field'], $_POST['street_number_field'], $_POST['street_name_field'], $_POST['apt_number_field'], $_POST['city_field'], $_POST['province_field'], $_POST['postal_code_field'], $_POST['num_bedrooms_field'], $_POST['num_bathrooms_field'], $_POST['accomodation_type_field'], $_POST['price_field']);
+		if ($stmt = $con->prepare($query)){
+			if (empty($_POST['apt_number_field'])){
+				$_POST['apt_number_field'] = NULL;
+			}
+			
+			$stmt->bind_Param("sssssssssssss", $_POST['districtID_field'], $_POST['street_number_field'], $_POST['street_name_field'], $_POST['apt_number_field'], $_POST['city_field'], $_POST['province_field'], $_POST['postal_code_field'], $_POST['num_bedrooms_field'], $_POST['num_bathrooms_field'], $_POST['accomodation_type_field'], $_POST['price_field'], $_POST['existingPropID'], $_SESSION['id']);
 
-		if (!$stmt->execute()){
-			printf ("Error: %s",$stmt->error);
+			if (!$stmt->execute()){
+				printf ("Error: %s",$stmt->error);
+				$con->rollback();
+				$error = 1;
+				http_response_code(400);
+				die();
+			}
+			else if ($con->affected_rows != 1){
+				printf ("Property not found");
+				$con->rollback();
+				$error = 1;
+				http_response_code(400);
+				die();
+			}
+		}
+		else {
 			$con->rollback();
 			$error = 1;
-            http_response_code(400);
+			http_response_code(500);
+			echo "SQL Prepare Failed. (Property Update)";
 			die();
 		}
-		else{
-			$propID = $con->insert_id;
+		
+		$query = "DELETE FROM prop_feature WHERE property_ID = ?";
+		
+		if ($stmt = $con->prepare($query)){
+		
+			$stmt->bind_Param("s", $_POST['existingPropID']);
+
+			if (!$stmt->execute()){
+				printf ("Error: %s",$stmt->error);
+				$con->rollback();
+				$error = 1;
+				http_response_code(400);
+				die();
+			}
 		}
+		else {
+			$con->rollback();
+			$error = 1;
+			http_response_code(500);
+			echo "SQL Prepare Failed. (Features Delete)";
+			die();
+		}
+		
+		$query = "DELETE FROM prop_photo WHERE property_ID = ?";
+		
+		if ($stmt = $con->prepare($query)){
+		
+			$stmt->bind_Param("s", $_POST['existingPropID']);
+
+			if (!$stmt->execute()){
+				printf ("Error: %s",$stmt->error);
+				$con->rollback();
+				$error = 1;
+				http_response_code(400);
+				die();
+			}
+		}
+		else {
+			$con->rollback();
+			$error = 1;
+			http_response_code(500);
+			echo "SQL Prepare Failed. (Photos Delete)";
+			die();
+		}
+		$propID = $_POST['existingPropID'];
 	}
 	else {
-		$con->rollback();
-		$error = 1;
-        http_response_code(500);
-        echo "SQL Prepare Failed. (Property)";
-        die();
+		$query = "INSERT INTO property (`property_ID`, `member_ID`, `district_ID`, `enabled`, `street_number`, `street_name`, `apt_number`, `city`, `province`, `postal_code`, `num_bedrooms`, `num_bathrooms`, `accomodation_type`, `price`) VALUES (NULL, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		
+		if ($stmt = $con->prepare($query)){
+			
+			if (empty($_POST['apt_number_field'])){
+				$_POST['apt_number_field'] = NULL;
+			}
+			
+			$stmt->bind_Param("ssssssssssss", $_SESSION['id'], $_POST['districtID_field'], $_POST['street_number_field'], $_POST['street_name_field'], $_POST['apt_number_field'], $_POST['city_field'], $_POST['province_field'], $_POST['postal_code_field'], $_POST['num_bedrooms_field'], $_POST['num_bathrooms_field'], $_POST['accomodation_type_field'], $_POST['price_field']);
+
+			if (!$stmt->execute()){
+				printf ("Error: %s",$stmt->error);
+				$con->rollback();
+				$error = 1;
+				http_response_code(400);
+				die();
+			}
+			else{
+				$propID = $con->insert_id;
+			}
+		}
+		else {
+			$con->rollback();
+			$error = 1;
+			http_response_code(500);
+			echo "SQL Prepare Failed. (Property)";
+			die();
+		}
 	}
-	
+		
 	if ($error == 0){
 		$query = "INSERT INTO prop_feature (`property_ID`, `feature_ID`) VALUES (?, ?)";
 		
@@ -116,7 +196,7 @@ if(isset($_POST['districtID_field']) and isset($_POST['street_number_field']) an
 	if ($error == 0){
 		$con->commit();
 		http_response_code(200);
-		echo "Property Created Successfully.";
+		echo "Property Created/Updated Successfully.";
 		die();
 	}
 	else{
@@ -125,7 +205,6 @@ if(isset($_POST['districtID_field']) and isset($_POST['street_number_field']) an
 		http_response_code(500);
 		die();
 	}
-	
 }		 
  ?>
 <!DOCTYPE HTML>
@@ -134,6 +213,12 @@ if(isset($_POST['districtID_field']) and isset($_POST['street_number_field']) an
 
  <form name='newproperty' id='newproperty' action='newproperty.php' method='post'>
     <table border='0'>
+		<tr>
+            <td>Property ID (to edit)</td>
+            <td><input type='number' name='existingPropID' id='existingPropID' 
+			<?php if (isset($_POST['existingPropID'])) echo 'value="'.$_POST['existingPropID'].'"';?>
+			/></td>
+        </tr>
 		<tr>
 		<td><b>New Property Info</b></td>
 		</tr>
