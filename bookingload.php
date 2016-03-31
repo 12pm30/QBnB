@@ -6,7 +6,7 @@
 if(isset($_SESSION['id'])){
 	include_once 'config/connection.php';
 	
-	$query = "SELECT booking_ID, property_ID, first_name, middle_initial, last_name, street_number, street_name, apt_number, city, province, postal_code, start_date, end_date FROM booking JOIN property USING (property_ID) JOIN member ON (property.member_ID = member.member_ID) WHERE end_date >= ? AND booking.member_ID = ? ORDER BY start_date";
+	$query = "SELECT booking_ID, property_ID, first_name, middle_initial, last_name, street_number, street_name, apt_number, city, province, postal_code, start_date, end_date, status FROM booking JOIN property USING (property_ID) JOIN member ON (property.member_ID = member.member_ID) WHERE end_date >= ? AND booking.member_ID = ? ORDER BY start_date";
 	
 	if ($stmt = $con->prepare($query)){
 		
