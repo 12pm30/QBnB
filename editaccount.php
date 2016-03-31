@@ -106,7 +106,7 @@ if(isset($_POST['first_name_field']) and isset($_POST['last_name_field']) and is
 				die();
 			}
 			else if ($con->affected_rows == 1){
-				echo "Account update successful. <br>";
+				//echo "Account update successful. <br>";
 			}
 			else{
 				echo "Error updating account.";
@@ -141,7 +141,7 @@ if(isset($_POST['first_name_field']) and isset($_POST['last_name_field']) and is
 					die();
 				}
 				else if ($con->affected_rows == 1){
-					echo "Degree " . $x . " update successful. <br>";
+					//echo "Degree " . $x . " update successful. <br>";
 				}
 				else {
 					echo $con->affected_rows . "<br>";
@@ -164,7 +164,22 @@ if(isset($_POST['first_name_field']) and isset($_POST['last_name_field']) and is
 	if ($error == 0){
 		$con->commit();
 		http_response_code(200);
-		echo "All updates succeeded.";
+		echo "<html>
+		<head>
+		<link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+		</head>
+		<body>
+		<style>
+		p{
+			font-family: 'Open Sans', sans-serif;
+			text-align: center;
+		}
+		</style>
+		<p>
+		 All updates succeeded.
+		</p>
+		</body>
+		</html>";
 		die();
 	}
 	else{
