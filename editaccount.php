@@ -177,52 +177,77 @@ if(isset($_POST['first_name_field']) and isset($_POST['last_name_field']) and is
 ?>
 <!DOCTYPE HTML>
 <html>
+<head>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+<title> Edit Account Details </title>
+</head>
 <body>
- 
- <form name='login' id='login' action='editaccount.php' method='post'>
-    <table border='0'>
-        <tr>
-            <td>First Name*</td>
-            <td><input type='text' name='first_name_field' id='first_name_field' 
+
+<style>
+table,input {
+	font-family: 'Open Sans', sans-serif;
+}
+
+input.rounded {
+	border: 1px solid #ccc;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	padding: 4px 7px;
+	outline: 0;
+	-webkit-appearance: none;
+}
+input.rounded:focus {
+	border-color: #339933;
+}
+	
+
+</style>
+
+<form name='login' id='login' action='editaccount.php' method='post'>
+	<table border='0'>
+		<tr>
+			<td>First Name*</td>
+			<td><input type='text' class="rounded" name='first_name_field' id='first_name_field' 
 			<?php echo 'value="'.$memrow['first_name'].'"';?>
 			/></td>
-        </tr>
-        <tr>
-            <td>Middle Initial</td>
-             <td><input type='text' maxlength=1 name='middle_initial_field' id='middle_initial_field' 
+		</tr>
+		<tr>
+			<td>Middle Initial</td>
+			 <td><input type='text' class="rounded" maxlength=1 name='middle_initial_field' id='middle_initial_field' 
 			 <?php echo 'value="'.$memrow['middle_initial'].'"';?>
 			 /></td>
-        </tr>
+		</tr>
 		<tr>
-            <td>Last Name*</td>
-             <td><input type='text' name='last_name_field' id='last_name_field' 
+			<td>Last Name*</td>
+			 <td><input type='text' class="rounded" name='last_name_field' id='last_name_field' 
 			 <?php echo 'value="'.$memrow['last_name'].'"';?>
 			 /></td>
-        </tr>
+		</tr>
 		<tr>
-            <td>Email*</td>
-             <td><input type='email' name='email_field' id='email_field' 
+			<td>Email*</td>
+			 <td><input type='email' class="rounded" name='email_field' id='email_field' 
 			 <?php echo 'value="'.$memrow['email'].'"';?>
 			 /></td>
-        </tr>
+		</tr>
 		<tr>
-            <td>Primary Phone*</td>
-             <td><input type='number' name='primary_phone_field' id='primary_phone_field' 
+			<td>Primary Phone*</td>
+			 <td><input type='number' class="rounded" name='primary_phone_field' id='primary_phone_field' 
 			 <?php echo 'value="'.$memrow['primary_phone'].'"';?>
 			 /></td>
-        </tr>
+		</tr>
 		<tr>
-            <td>Secondary Phone</td>
-             <td><input type='number' name='secondary_phone_field' id='secondary_phone_field' 
+			<td>Secondary Phone</td>
+			 <td><input type='number' class="rounded" name='secondary_phone_field' id='secondary_phone_field' 
 			 <?php echo 'value="'.$memrow['secondary_phone'].'"';?>
 			 /></td>
-        </tr>
+		</tr>
 		<tr>
-            <td>Profile Picture URL</td>
-             <td><input type='url' name='ppURL_field' id='ppURL_field' 
+			<td>Profile Picture URL</td>
+			 <td><input type='url' class="rounded" name='ppURL_field' id='ppURL_field' 
 			 <?php echo 'value="'.$memrow['profile_pic_URL'].'"';?>
 			 /></td>
-        </tr>	
+		</tr>	
 		<?php	
 		echo
 		"<input type='hidden' name='numberDegrees' id = 'numberDegrees'
@@ -241,19 +266,19 @@ if(isset($_POST['first_name_field']) and isset($_POST['last_name_field']) and is
 		/>
 		<tr>
 			<td>Year</td>
-			 <td><input type='number' name='year_" . $x . "' id='year_" . $x . "'
+			 <td><input type='number' class=\"rounded\" name='year_" . $x . "' id='year_" . $x . "'
 			 value = '" . $degrow['year'] . "'
 			 /></td>
 		</tr>
 		<tr>
 			<td>Faculty</td>
-			 <td><input type='text' name='faculty_" . $x . "' id='faculty_" . $x . "'
+			 <td><input type='text' class=\"rounded\" name='faculty_" . $x . "' id='faculty_" . $x . "'
 			 value = '" . $degrow['faculty'] . "'
 			 /></td>
 		</tr>
 		<tr>
 			<td>Type</td>
-			 <td><input type='text' name='type_" . $x . "' id='type_" . $x . "'
+			 <td><input type='text' class=\"rounded\" name='type_" . $x . "' id='type_" . $x . "'
 			 value = '" . $degrow['type'] . "'
 			 /></td>
 		</tr>"
@@ -263,13 +288,13 @@ if(isset($_POST['first_name_field']) and isset($_POST['last_name_field']) and is
 		?>
 					
 		
-        <tr>
-            <td></td>
-            <td>
-                <input type='submit' id='editAcctBtn' name='editAcctBtn' value='Save Changes' /> 
-            </td>
-        </tr>
-    </table>
+		<tr>
+			<td></td>
+			<td>
+				<input type='submit' class="rounded" id='editAcctBtn' name='editAcctBtn' value='Save Changes' /> 
+			</td>
+		</tr>
+	</table>
 </form>
  
 </body>
