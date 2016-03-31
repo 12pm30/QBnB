@@ -79,9 +79,9 @@ if (isset($_GET['member_ID_field'])){
 				$row['middle_initial'] = $row['middle_initial'] . " ";
 			}
 			echo "<p>
-			<b>Member ID: " . $row['member_ID'] . "<br>\n"
-			."User Details</b><br>\n"
-			."Name: " . $row['first_name'] . " " . $row['middle_initial'] . $row['last_name'] . "<br>\n"
+			<b>Member ID: " . $row['member_ID'] . "</b></p>"
+			."<b>User Details:</b><br>\n"
+			."<p>Name: " . $row['first_name'] . " " . $row['middle_initial'] . $row['last_name'] . "<br>\n"
 			."Email: " . $row['email'] . "<br>\n"
 			."Primary Phone: " . $row['primary_phone'] . "<br>\n";
 			
