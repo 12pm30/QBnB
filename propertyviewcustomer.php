@@ -134,12 +134,35 @@ if(isset($_POST['property_to_view'])){
 		die();
 	}
 	
+	$query = "SELECT first_name, middle_initial, last_name, rating, review_text, reply_text FROM review NATURAL JOIN member WHERE property_ID = ?";
+	
+	if ($stmt = $con->prepare($query)){
+		
+		$stmt->bind_Param("s", $_POST['property_to_view']);
+
+		$stmt->execute();
+		
+		$result = $stmt->get_result();
+		
+		$resarrayr = array();
+		
+		while ($row = $result->fetch_assoc()){
+			$resarrayr[] = $row;
+		}
+	}
+	else {
+		echo "SQL Prepare Failed. (Reviews)";
+		http_response_code(500);
+		die();
+	}
+	
 	$resarray = array();
 	$resarray['details'] = $resarraypd;
 	$resarray['features'] = $resarrayf;
 	$resarray['availability'] = $resarraya;
 	$resarray['bookings'] = $resarrayb;
 	$resarray['photos'] = $resarrayp;
+	$resarray['reviews'] = $resarrayr;
 	
 	echo json_encode($resarray);
 	http_response_code(200);
